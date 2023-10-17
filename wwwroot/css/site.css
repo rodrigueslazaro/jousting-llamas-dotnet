@@ -63,6 +63,95 @@ a, .btn-link {
     color: white;
 }
 
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
+.blazor-error-boundary::after {
+    content: "An error has occurred."
+}
+
+.match-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.background {
+    position: relative;
+    height: 324px;
+    background-image: url("../back1.png");
+    background-size: 115px;
+    image-rendering: pixelated;
+    top: 200px;
+    z-index: 0;
+}
+
+.jousting-ground {
+    margin: auto;
+    background-color: transparent;
+    width: fit-content;
+    position: relative;
+    top: -100px;
+}
+
+.jousting-side {
+    display: flex;
+}
+
+.jousting-p1 {
+    position: relative;
+    top: 20px;
+    z-index: 0;
+}
+
+.jousting-p2 {
+    position: relative;
+    top: -120px;
+    z-index: 2;
+}
+
+.location {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+}
+
+.jousting-tilt {
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    position: relative;
+    top: -32px;
+    z-index: 1;
+}
+
+.jousting-tilt img {
+    height: 50px;
+    image-rendering: pixelated;
+}
+
+#a1 {
+    visibility: visible;
+    position: relative;
+}
+#b1 {
+    visibility: visible;
+}
+
+.character {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+.animation {
+    height: 100px;
+    image-rendering: pixelated;
+    animation: sprite .5s steps(2) infinite;
+}
+
+@keyframes sprite {
+    from {
+        transform: translate(0px,0)
     }
+    to {
+        transform: translate(-100%,0)
+    }
+}

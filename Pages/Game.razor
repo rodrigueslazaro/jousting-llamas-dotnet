@@ -1,0 +1,47 @@
+@page "/game"
+
+<PageTitle>Jousting Llamas!</PageTitle>
+
+<Field/>
+
+@code {
+    private int[] players = { -1, -1 };
+    private int[] position = new int[20];
+    private bool play = false;
+
+    string message = "Hello from ParentComponent";
+
+    void ClickHandler(string newMessage)
+    {
+        message = newMessage;
+    }
+
+    private void DrawCards() {
+        play = true;
+    }
+    private void IncrementCount(int player)
+    {
+        int pos = 0;
+        if (player == 0)
+        {
+            pos = 0;
+        }
+        else if (player == 1)
+        {
+            pos = 10;
+        }
+        players[player]++;
+        if (players[player] < 10)
+        {
+            position[players[player] + pos] = 1;
+        }
+        if (players[player] > 0 && players[player] <= 10)
+        {
+            position[players[player] - 1 + pos] = 0;
+        }
+        if (players[player] >= 10)
+        {
+            players[player] = -1;
+        }
+    }
+}

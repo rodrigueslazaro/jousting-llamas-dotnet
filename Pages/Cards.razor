@@ -1,0 +1,84 @@
+@inject IJSRuntime js;
+
+@if (state == 1) {
+    <button class="draw-cards-button" id="playDraw" @onclick="drawCards">DRAW</button>
+} else if (state == 2) {
+    <section class="pick-outcome">
+        <button class="play vic" @onclick="() => {guessOutcome(1);OnClick.InvokeAsync();}">VICTORY!</button>
+        <button class="play def" @onclick="() => guessOutcome(0)">DEFEAT!</button>
+    </section>
+}
+
+@if (drew)
+{
+    <article class="cards" style="position: relative; top:@(cardsPos + "px");">
+        <section class="str">
+            <h2>STRENGHT</h2>
+            <img class="card" src="strenghtk2.png">
+            <p>@str</p>
+        </section>
+        <section class="str">
+            <h2>AGILITY</h2>
+            <img class="card" src="agilityk2.png">
+            <p>@agi</p>
+        </section>
+        <section class="agi">
+            <h2>RESISTANCE</h2>
+            <img class="card" src="resistancek2.png">
+            <p>@res</p>
+        </section>
+        <section class="str">
+            <h2>STRENGHT</h2>
+            <img class="card" src="agilityk1.png">
+            <p>@str</p>
+        </section>
+    </article>
+} else if (state == 3) {
+
+}
+
+<audio id="drawPlayer">
+    <source src="sounds/draw.wav" type="audio/wav">
+</audio>
+
+@code {
+    private bool drew = false;
+    private int str, agi, res, enmy, cardsPos = 300;
+    private int state = 1;
+
+    [Parameter] public EventCallback<string> OnClick { get; set; }
+    private async void drawCards()
+    {
+        await PlayAudioFile("draw");
+        Random random = new Random();
+        str = random.Next(1, 11);
+        agi = random.Next(1, 11);
+        res = random.Next(1, 11);
+        enmy = random.Next(1, 11);
+
+        await Task.Delay(300);
+        drew = true;
+        while (cardsPos >= -610)
+        {
+            await Task.Delay(1);
+            cardsPos -= 18;
+            StateHasChanged();
+        }
+        await Task.Delay(20);
+        cardsPos = -600;
+        state = 2;
+        StateHasChanged();
+    }
+    
+    private void guessOutcome(int outcome) {
+        drew = false;
+        state = 3;
+        StateHasChanged();
+        
+    }
+    async Task PlayAudioFile(string name)
+    {
+        string file = "/sounds/"+name+".wav";
+        await js.InvokeVoidAsync("PlayAudioFile", file);
+    }
+}

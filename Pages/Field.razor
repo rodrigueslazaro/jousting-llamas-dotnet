@@ -1,0 +1,103 @@
+﻿@page "/field"
+@inject IJSRuntime js;
+
+@if (msg2) {
+    <img src="hit.png" class="visual-message">
+}
+
+@if (msg1) {
+    <h2 class="visual-message">@message</h2>
+}
+
+<article class="jousting-ground">
+    <section class="background"></section>
+    <section class="jousting-side jousting-p1">
+        <div class="character"style=" left: @(playerpos[0] + "px");">
+            <img class="animation" id="a1" src="k2sprite.png" alt="Pixel art: knight with a lance riding a llama" />
+        </div>
+    </section>
+    <div class="jousting-tilt">
+        @for (int i = 0; i < 24; i++)
+        {
+            <div class="fence">
+                <img src="../fence.png">
+            </div>
+        }
+    </div>
+    <section class="jousting-side jousting-p2">
+        <div class="character" style="left: @(playerpos[1] + "px");">
+            <img class="animation" id="a1"  src="k1sprite.png" alt="Pixel art: knight with a lance riding a llama" />
+        </div>
+    </section>
+</article>
+
+<Cards OnClick="Play"></Cards>
+
+@code {
+    private int[] playerpos = {0, 1100};
+
+    private string message;
+    private Random random = new Random();
+    private bool msg1 = false, msg2 = false;
+
+    public async void Play()
+    {
+        await Task.Delay(100);
+        msg1 = true;
+        message = "In position!";
+        StateHasChanged();
+        await Task.Delay(500);
+        message = "3";
+        StateHasChanged();
+        await Task.Delay(500);
+        message = "2";
+        StateHasChanged();
+        await Task.Delay(500);
+        message = "1";
+        StateHasChanged();
+        await Task.Delay(500);
+        await PlayAudioFile("trumpet");
+        message = "Engage!";
+        StateHasChanged();
+        await Task.Delay(500);
+        msg1 = false;
+        StateHasChanged();
+        await PlayAudioFile("gallop");  
+        for (int i = 0; i <= 1100; i++)
+        {
+            await Task.Delay(1);
+            IncrementCount(0);
+            IncrementCount(1);
+            if (playerpos[0] == playerpos[1]) {
+                await PlayAudioFile("hit");
+                ShowHit();
+            }
+        }
+    }
+
+    public async void ShowHit() {
+        msg2 = true;
+        StateHasChanged();
+        await Task.Delay(500);
+        msg2 = false;
+        StateHasChanged();
+    }
+
+    public async void IncrementCount(int p) {
+        if (p == 0) {
+            await Task.Delay(random.Next(5));
+            playerpos[p] += 1;
+            StateHasChanged();
+        } else if (p == 1) {
+            await Task.Delay(random.Next(5));
+            playerpos[p] -= 1;
+            StateHasChanged();
+        }
+    }
+
+    async Task PlayAudioFile(string name)
+    {
+        string file = "/sounds/"+name+".wav";
+        await js.InvokeVoidAsync("PlayAudioFile", file);
+    }
+}

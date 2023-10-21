@@ -13,7 +13,10 @@
     <section class="background"></section>
     <section class="jousting-side jousting-p1">
         <div class="character"style=" left: @(playerpos[0] + "px");">
-            <img class="animation" id="a1" src="k2sprite.png" alt="Pixel art: knight with a lance riding a llama" />
+            <img class="animation" id="a1" src="@k2img" alt="Pixel art: knight with a lance riding a llama" />
+        </div>
+        <div class="character" style="left: @(k2loosepos + "px"); visibility: @didk2loose; top: -80px">
+            <img class="fallen" src="k2defeat.png" alt="Pixel art: fallen knight" />
         </div>
     </section>
     <div class="jousting-tilt">
@@ -26,21 +29,40 @@
     </div>
     <section class="jousting-side jousting-p2">
         <div class="character" style="left: @(playerpos[1] + "px");">
-            <img class="animation" id="a1"  src="k1sprite.png" alt="Pixel art: knight with a lance riding a llama" />
+            <img class="animation" id="a1"  src="@k1img" alt="Pixel art: knight with a lance riding a llama" />
         </div>
+        <div class="character" style="left: @(k1loosepos + "px"); visibility: @didk1loose; top: -80px">
+            <img class="fallen" src="k1defeat.png" alt="Pixel art: fallen knight" />
+        </div>
+    </section>
+    <section class="score">
+        <span>
+            <h2> YOUR POINTS </h2>
+            <p> @pointsp1 </p>
+        </span>
+        <span>
+            <h2> ENEMY POINTS </h2>
+            <p> @pointsp2 </p>
+        </span>
     </section>
 </article>
 
-<Cards OnClick="Play"></Cards>
+<Cards OnClick="Play" state=1></Cards>
 
 @code {
+
+    private int pointsp1, pointsp2;
+    private const int LEN = 1100;
     private int[] playerpos = {0, 1100};
 
-    private string message;
+    int c1=0, c2=0;
+    private string message, k1img = "k1sprite.png", k2img = "k2sprite.png";
+    private string didk1loose = "hidden", didk2loose = "hidden";
+    private int k1loosepos, k2loosepos;
     private Random random = new Random();
     private bool msg1 = false, msg2 = false;
 
-    public async void Play()
+    async void Play(string winner)
     {
         await Task.Delay(100);
         msg1 = true;
@@ -62,20 +84,59 @@
         await Task.Delay(500);
         msg1 = false;
         StateHasChanged();
-        await PlayAudioFile("gallop");  
-        for (int i = 0; i <= 1100; i++)
+        await PlayAudioFile("gallop");
+        for (int i = 0; i <= LEN; i++)
         {
             await Task.Delay(1);
-            IncrementCount(0);
-            IncrementCount(1);
-            if (playerpos[0] == playerpos[1]) {
+            IncrementCount(0, winner);
+            IncrementCount(1, winner);
+            if (c1+c2 == LEN+250) {
+                Console.WriteLine("IGUALOU!");
+                ShowHit(winner);
                 await PlayAudioFile("hit");
-                ShowHit();
             }
         }
+        if (winner[0] == winner[1] && winner[1] == '0') {
+            msg1 = true;
+            message = "WON AND WON: CORRECT!";
+            pointsp1++;
+            StateHasChanged();
+        } else  if (winner[0] == winner[1] && winner[1] == '1') {
+            msg1 = true;
+            message = "LOOSE AND LOOSE: CORRECT!";
+            pointsp1++;
+            StateHasChanged();
+        } else  if (winner[0] != winner[1] && winner[1] == '0') {
+            msg1 = true;
+            message = "WON BUT LOOSE: WRONG!";
+            StateHasChanged();
+        } else  if (winner[0] != winner[1] && winner[1] == '1') {
+            msg1 = true;
+            message = "LOOSE BUT WON: WRONG!";
+            StateHasChanged();       
+        } else if (winner[0] == '2') {
+            msg1 = true;
+            message = "DRAW!";
+            StateHasChanged();       
+        }
+        await Task.Delay(2000);
+        msg1 = false;
+        StateHasChanged();
     }
 
-    public async void ShowHit() {
+    public async void ShowHit(string winner) {
+        if (winner[0] == '0') {
+            k1img = "k1sprite_llama.png";
+            didk1loose = "visible";
+            k1loosepos = playerpos[1];
+        } else if (winner[0] == '1') {
+            k2img = "k2sprite_llama.png";
+            didk2loose = "visible";
+            k2loosepos = playerpos[0];
+        } else {
+            Console.WriteLine("EMPATOU!");
+        }
+        StateHasChanged();
         msg2 = true;
         StateHasChanged();
         await Task.Delay(500);
@@ -83,14 +144,28 @@
         StateHasChanged();
     }
 
-    public async void IncrementCount(int p) {
+    public async void IncrementCount(int p, string winner) {
         if (p == 0) {
+            c1++;
             await Task.Delay(random.Next(5));
-            playerpos[p] += 1;
+            if (winner[0] == '0') {
+                playerpos[p] += 1;
+            } else if (winner[0] == '1' && random.Next(4) >= 2) {
+                playerpos[p] += 1;
+            } else if (winner[0] == '2') {
+                playerpos[p] += 1;
+            }
             StateHasChanged();
         } else if (p == 1) {
+            c2++;
             await Task.Delay(random.Next(5));
-            playerpos[p] -= 1;
+            if (winner[0] == '1') {
+                playerpos[p] -= 1;
+            } else if (winner[0] == '0' && random.Next(4) >= 2) {
+                playerpos[p] -= 1;
+            } else if (winner[0] == '2') {
+                playerpos[p] -= 1;
+            }
             StateHasChanged();
         }
     }

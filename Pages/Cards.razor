@@ -4,9 +4,11 @@
     <button class="draw-cards-button" id="playDraw" @onclick="drawCards">DRAW</button>
 } else if (state == 2) {
     <section class="pick-outcome">
-        <button class="play vic" @onclick="() => {guessOutcome(1);OnClick.InvokeAsync();}">VICTORY!</button>
-        <button class="play def" @onclick="() => guessOutcome(0)">DEFEAT!</button>
+        <button class="play vic" @onclick="@(() => {guessOutcome(1);OnClick.InvokeAsync(winner+"0");})">VICTORY!</button>
+        <button class="play def" @onclick="@(() => {guessOutcome(1);OnClick.InvokeAsync(winner+"1");})">DEFEAT!</button>
     </section>
+} else {
+    <p></p>
 }
 
 @if (drew)
@@ -15,26 +17,24 @@
         <section class="str">
             <h2>STRENGHT</h2>
             <img class="card" src="strenghtk2.png">
-            <p>@str</p>
+            <p>@stats[0]</p>
         </section>
         <section class="str">
             <h2>AGILITY</h2>
             <img class="card" src="agilityk2.png">
-            <p>@agi</p>
+            <p>@stats[1]</p>
         </section>
         <section class="agi">
             <h2>RESISTANCE</h2>
             <img class="card" src="resistancek2.png">
-            <p>@res</p>
+            <p>@stats[2]</p>
         </section>
         <section class="str">
             <h2>STRENGHT</h2>
             <img class="card" src="agilityk1.png">
-            <p>@str</p>
+            <p>@stats[randCard]</p>
         </section>
     </article>
-} else if (state == 3) {
-
 }
 
 <audio id="drawPlayer">
@@ -42,39 +42,55 @@
 </audio>
 
 @code {
+
+    [Parameter]
+    public int state {get; set;}
     private bool drew = false;
-    private int str, agi, res, enmy, cardsPos = 300;
-    private int state = 1;
+    private int cardsPos = 300, randCard;
+
+    private string winner;
+
+    private int[] stats = new int[6];
+
 
     [Parameter] public EventCallback<string> OnClick { get; set; }
     private async void drawCards()
     {
         await PlayAudioFile("draw");
         Random random = new Random();
-        str = random.Next(1, 11);
-        agi = random.Next(1, 11);
-        res = random.Next(1, 11);
-        enmy = random.Next(1, 11);
-
+        stats[0] = random.Next(1, 11);
+        stats[1] = random.Next(1, 11);
+        stats[2] = random.Next(1, 11);
+        stats[3] = random.Next(1, 11);
+        stats[4] = random.Next(1, 11);
+        stats[5] = random.Next(1, 11);
+        randCard = random.Next(3, 6);
+        int p1Sum = stats[0]+stats[1]+stats[2];
+        int p2Sum = stats[3]+stats[4]+stats[5];
+        if (p1Sum > p2Sum) {
+            winner = "0";
+        } else if (p1Sum < p2Sum) {
+            winner = "1";
+        } else {
+            winner = "2";
+        }
         await Task.Delay(300);
         drew = true;
-        while (cardsPos >= -610)
+        while (cardsPos >= -910)
         {
             await Task.Delay(1);
             cardsPos -= 18;
             StateHasChanged();
         }
         await Task.Delay(20);
-        cardsPos = -600;
+        cardsPos = -900;
         state = 2;
         StateHasChanged();
     }
     
     private void guessOutcome(int outcome) {
         drew = false;
-        state = 3;
         StateHasChanged();
-        
     }
     async Task PlayAudioFile(string name)
     {

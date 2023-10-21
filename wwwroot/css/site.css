@@ -1,3 +1,8 @@
+body {
+    height: 100px;
+    overflow: hidden;
+}
+
 .background {
     position: relative;
     height: 324px;
@@ -27,13 +32,13 @@
     flex-direction: row;
     height: 50px;
     position: relative;
-    top: -32px;
+    top: -112px;
     z-index: 2;
 }
 
 .jousting-p2 {
     position: relative;
-    top: -120px;
+    top: -200px;
     z-index: 3;
 }
 
@@ -54,9 +59,6 @@
     justify-content: center;
     gap: 20px;
     z-index: 10;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(80, 76, 76, 0.442);
 }
 
 .cards img {
@@ -89,7 +91,9 @@
 .pick-outcome {
     display: flex;
     justify-content: center;
-    gap: 20px
+    gap: 20px;
+    position: relative;
+    top: -400px;
 }
 
 .play {
@@ -140,6 +144,8 @@
     margin: auto;
     border: 6px outset brown;
     background-color: rgb(234, 128, 79);
+    position: relative;
+    top: -400px;
 }
 
 .draw-cards-button:hover {
@@ -175,6 +181,11 @@
     animation: sprite .5s steps(2) infinite;
 }
 
+.fallen {
+    height: 100px;
+    image-rendering: pixelated;
+}
+
 @keyframes sprite {
     from {
         transform: translate(0px,0)
@@ -196,4 +207,18 @@
     width: 10px;
     height: 10px;
     border-radius: 100%;
+}
+
+.score {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: center;
+    position: relative;
+    top: -220px;
+    padding: 0 50px;  
+}
+
+.score p {
+    font-size: 3rem;
 }

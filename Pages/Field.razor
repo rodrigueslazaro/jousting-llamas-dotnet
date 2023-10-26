@@ -6,7 +6,7 @@
 }
 
 @if (msg1) {
-    <h2 class="visual-message">@message</h2>
+    <h2 class="text-message">@message</h2>
 }
 
 <article class="jousting-ground">
@@ -64,6 +64,7 @@
 
     async void Play(string winner)
     {
+        
         await Task.Delay(100);
         msg1 = true;
         message = "In position!";

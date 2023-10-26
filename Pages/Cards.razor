@@ -54,6 +54,7 @@
 
 
     [Parameter] public EventCallback<string> OnClick { get; set; }
+    [Parameter] public EventCallback<string> OnClick2 { get; set; }
     private async void drawCards()
     {
         await PlayAudioFile("draw");

@@ -168,9 +168,19 @@ body {
     position: absolute;
     text-align: center;
     top: 30px;
-    left: 50%;
+    left: 47.3%;
     image-rendering: pixelated;
     width: 100px;
+    height: 100px;
+    overflow: visible;
+}
+.text-message {
+    position: absolute;
+    text-align: center;
+    top: 30px;
+    left: 42%;
+    image-rendering: pixelated;
+    width: 300px;
     height: 100px;
     overflow: visible;
 }
@@ -179,6 +189,15 @@ body {
     height: 100px;
     image-rendering: pixelated;
     animation: sprite .5s steps(2) infinite;
+}
+
+.start-game {
+    display: block;
+    font-size: 3rem;
+    text-align: center;
+    margin: auto;
+    margin-top: 300px;
+    margin-bottom: 600px;
 }
 
 .fallen {
